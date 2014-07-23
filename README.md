@@ -11,12 +11,11 @@ In this paper we concentrate on a Blue Button CCDA based patient data model and 
 
 Data whose storage characteristics is being investigated here is the Master Health Record which contains all historical data about patients' health.  It is based on [blue-button](https://github.com/amida-tech/blue-button) data model.  [blue-button](https://github.com/amida-tech/blue-button) it self is based on Blue Button CCDA.
 
-Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries.
-Thus the unit health data storage element here is an 'entry' whose content differs from section to section.  For example for allergies the schema is
+## Health Data Content
 
-For content of the entry we will use [blue-button](https://github.com/amida-tech/blue-button).  As an example for allergies
+Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an 'entry' whose content differs from section to section.  For example for allergies the schema for an entry is
 ``` javascript
-var allergy_schema = {
+var allergy_entry_schema = {
   allergen: {
     name: String,
     code: String,
@@ -53,6 +52,8 @@ var allergy_schema = {
   }]
 };
 ```
+
+## Metadata
 
 In addition the following metadata is assumed to be needed for each entry
 - Patient Key: This is a key to identify the patient that the entry belongs to.
