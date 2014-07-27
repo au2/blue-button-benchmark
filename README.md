@@ -66,9 +66,27 @@ var mhr = {
 
 ## Metadata
 
-In addition the following metadata is assumed to be needed for each entry
-- Patient Key: This is a key to identify the patient that the entry belongs to.
-- Update History: This information includes the sources of the entry and update instances. 
-- Status: This identifies the status of the entry such as active, inactive, removed.
+For each entry we assume three pieces of metadata: patient key, status and update history.
+In addition the following metadata is assumed for each entry
+
+### Patient Key
+
+Each entry belongs to a patient. We identify patient with a single string for which we will use variable `pat_key` in schema descriptions.  Patient key is important since our solution needs to be scalable with number of patients. 
+
+### Status
+
+We will assume that each entry can have three states: `active`, `preliminary`, `deleted`.  Active entries are those that are in a master health record.   Preliminary entries are those that have been read from a source for a patient but needs to be reviewed before being added to a master health record or rejected.  Deleted entries are once active ones that were removed from a master health record or preliminary ones that were rejected.
+
+We will use variable `status` in schema descriptions.
+
+### Update History
+
+This information includes the sources of the entry and update instances.
+
+# Schemas
 
 This work looks into various ways to store this information in MongoDB from performance perspective.
+
+# Use Case
+
+This work assumes a PHR application.
