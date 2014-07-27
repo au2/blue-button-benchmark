@@ -81,7 +81,22 @@ We will use variable `status` in schema descriptions.
 
 ### Update History
 
-This information includes the sources of the entry and update instances.
+Each entry in a master patient record originates from a source such as a CCDA file.  In subsequent receiving of sources entries can be updated or confirmed as they are.  The following is a schema of the information we assume
+``` javascript
+var source_info = {
+  name: String,
+  content: String,
+  content_type: String,
+  mime_type: String
+};
+
+var history = [
+  source: source_info,
+  update_type: String,
+  update_instance: Date
+];
+```
+Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
 # Schemas
 
