@@ -103,9 +103,64 @@ Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the
 
 This work assumes a PHR application.
 
-# Schemas
+# Database Designs
 
-This work looks into various ways to store master health record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the schemas that are compared.
+This work looks into various database designs to store master health record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the designs that are compared.  Databases are described in terms of MongoDB collections and schema for each collection.
+
+In these design descriptions we will assume master health record consists of two sections: allergies and procedures.  In the actual experimentation of these design number of sections will be one of the parameters for testing.
+
+<a name="design1"/>
+## Design 1
+
+In this design each entry for a particular section, source and update history are stored in their own collections.  Each collection record `pat_key` as an index property. The collections are: _allergies_, _procedures_, _sources_, and _histories_.
+
+``` javascript
+var allergies_schema = {
+  data: allergies_entry,
+  pat_key: String,
+  status: String,
+  history: [ObjectId]   // histories
+};
+
+var procedures_schema = {
+  data: procedures_entry,
+  pat_key: String,
+  status: String,
+  history: [ObjectId]   // histories
+};
+
+var histories_schema = {
+  source: ObjectId,     // sources
+  update_type: String,
+  update_instance: Date
+};
+
+var source_schema = {
+  name: String,
+  content: String,
+  content_type: String,
+  mime_type: String
+}
+```
+both `pat_key` and `status` are indexed properties.  Otherwise nothing else is indexed.
+
+## Design 2
+
+This is a variation of [Design 1](#design1) where instead of different collections for each section, all sections are stored in the same collection.  To identify an individual section type a `section_name` property is added to the schema.  Thus _allergies_ and _procedures_ are replaced by a single _entries_ collection whose schema is
+``` javascript
+var allergies_schema = {
+  data: allergies_entry,
+  pat_key: String,
+  status: String,
+  section_name: String,
+  history: [ObjectId]   // histories
+};
+```
+`section_name` is indexed.
+
+
+
+
 
 
 
