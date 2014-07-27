@@ -142,7 +142,7 @@ var source_schema = {
   mime_type: String
 }
 ```
-both `pat_key` and `status` are indexed properties.  Otherwise nothing else is indexed.
+both `pat_key` and `status` are indexed properties.
 
 ## Design 2
 
@@ -157,6 +157,40 @@ var entries = {
 };
 ```
 `section_name` is indexed.
+
+## Design 3
+
+In this design instead of identifying patient with `pat_key` as part of each entry record there is a patient collection which includes all the entries
+``` javascript
+var patients = {
+  pat_key: String,
+  allergies: [ObjectId],
+  procedures: [ObjectId]
+  deleted_allergies: [ObjectId],
+  deleted_procedures: [ObjectId],
+  preliminary_allergies: [ObjectId],
+  preliminary_procedures: [ObjectId]
+};
+```
+
+## Design 4
+
+This is a variation of Design 3 except that `status` and `section_name` are stored as part of the entries array
+``` javascript
+var patients = {
+  pat_key: String,
+  entries: [{
+     id: ObjectId,
+     status: String,
+     section_name: String
+  ]
+};
+```
+
+
+
+
+
 
 
 
