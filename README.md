@@ -148,7 +148,7 @@ both `pat_key` and `status` are indexed properties.  Otherwise nothing else is i
 
 This is a variation of [Design 1](#design1) where instead of different collections for each section, all sections are stored in the same collection.  To identify an individual section type a `section_name` property is added to the schema.  Thus _allergies_ and _procedures_ are replaced by a single _entries_ collection whose schema is
 ``` javascript
-var allergies_schema = {
+var entries = {
   data: allergies_entry,
   pat_key: String,
   status: String,
