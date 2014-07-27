@@ -14,9 +14,9 @@ Data whose storage characteristics is being investigated here is the Master Heal
 
 ## Health Data Content
 
-Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an 'entry' whose content differs from section to section.  For example for allergies the [Mongoose schema](http://mongoosejs.com/docs/guide.html) for an entry is
+Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an _entry_ whose content differs from section to section.  For example for allergies the [Mongoose schema](http://mongoosejs.com/docs/guide.html) for an entry is
 ``` javascript
-var allergy_entry = {
+var allergy_entry_schema = {
   allergen: {
     name: String,
     code: String,
@@ -53,9 +53,17 @@ var allergy_entry = {
   }]
 };
 ```
-We use entries for those are not arrays such as demographics.
 
-Patient master record can thus be described as a collection of sections and each section is an array of entries
+Each entry contains two to four fields that can identify the entry in a list of entries.  Patient can select an entry from a list based on these entries to see more details.  As an example for allergies the summary fields are
+``` javascript
+var allergy_summary_schema = {
+  allergen_name: String,
+  severity: String,
+  status: String
+};
+```
+
+Patient Master Heath Record is a collection of sections and each section is an array of entries
 ``` javascript
 var mhr = {
   demographics: demographics_entry,
@@ -105,9 +113,12 @@ This work assumes a PHR application.
 
 # Database Designs
 
-This work looks into various database designs to store master health record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the designs that are compared.  Databases are described in terms of MongoDB collections and schema for each collection.
+This work looks into various database designs to store Master Health Record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the designs that are compared.  Databases are described in terms of MongoDB collections and schema for each collection.
 
 In these design descriptions we will assume master health record consists of two sections: allergies and procedures.  In the actual experimentation of these design number of sections will be one of the parameters for testing.
+
+<a name="singleEntryDesigns"/>
+## Single Entry Designs
 
 <a name="design1"/>
 ## Design 1
@@ -186,6 +197,10 @@ var patients = {
   ]
 };
 ```
+
+## Multiple Entry Designs
+
+In each of the designs in the previous [section](#singleEntryDesigns), the basic document stored is an entry in a particular section.  This section explores the possibility to store multiple entries in a single document.  Since there is a 16M limit on a single document there must be a limit on the number entries a single document can contain. This limit `entries_per_document` is one of the parameters of the experimentation of performance.   
 
 
 
