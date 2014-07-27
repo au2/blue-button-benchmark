@@ -7,6 +7,7 @@ With the advent of patient centric solutions in the Health IT market such as pat
 
 In this paper we concentrate on a Blue Button CCDA based patient data model and investigate how to design patient data schemas to use MongoDB to its full potential.  Various schemas with varying document design and indexing choices are compared using various performance metrics and general recommendations are provided.  Such recommendations should prove useful not only for patient centric solutions but for VistA as well since similar models are being used or will be used for caching VistA data.
 
+<a name="dataContent"/>
 # Data Content
 
 Data whose storage characteristics is being investigated here is the Master Health Record which contains all historical data about patients' health.  It is based on [blue-button](https://github.com/amida-tech/blue-button) data model.  [blue-button](https://github.com/amida-tech/blue-button) it self is based on Blue Button CCDA.
@@ -98,10 +99,13 @@ var history = [
 ```
 Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
-# Schemas
-
-This work looks into various ways to store this information in MongoDB from performance perspective.
-
 # Use Case
 
 This work assumes a PHR application.
+
+# Schemas
+
+This work looks into various ways to store master health record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the schemas that are compared.
+
+
+
