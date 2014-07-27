@@ -13,9 +13,9 @@ Data whose storage characteristics is being investigated here is the Master Heal
 
 ## Health Data Content
 
-Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an 'entry' whose content differs from section to section.  For example for allergies the schema for an entry is
+Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an 'entry' whose content differs from section to section.  For example for allergies the [Mongoose schema](http://mongoosejs.com/docs/guide.html) for an entry is
 ``` javascript
-var allergy_entry_schema = {
+var allergy_entry = {
   allergen: {
     name: String,
     code: String,
@@ -50,6 +50,17 @@ var allergy_entry_schema = {
      severity: String
     }
   }]
+};
+```
+We use entries for those are not arrays such as demographics.
+
+Patient master record can thus be described as a collection of sections and each section is an array of entries
+``` javascript
+var mhr = {
+  demographics: demographics_entry,
+  medication: [medication_entry],
+  allergies: [allergy_entry],
+  ...
 };
 ```
 
