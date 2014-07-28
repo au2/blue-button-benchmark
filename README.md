@@ -111,7 +111,19 @@ Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the
 
 The use case for this work is a PHR application where patients can save, review and update their Master Health Record.  The use flow and database implications are as follows
 * Welcome page shows the Master Health Record organized as sections.  Each section shows list of all the active entries with only the summary fields.  This will be identified as "summary active load'.
-* Patient can receive health data from source such as CCDA files an
+* Patient can receive health data from a source such as CCDA files and update the health record.  Based on the content of the source
+** New active entries can be added.
+** Existing active entries can be updated
+* Patient can choose a particular entry from the list and
+** See the details.
+** Update the entry.
+** Remove an entry.
+
+The parameters for this effort are
+* `num_patients`
+* `num_new_patient`
+* `num_of_sections`
+* `
 
 # Database Designs
 
