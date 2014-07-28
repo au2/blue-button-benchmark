@@ -107,9 +107,9 @@ var history = [
 ```
 Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
-# Use Case
+# Use Case and Parameters
 
-This work assumes a PHR application.
+The use case for this work is a PHR application 
 
 # Database Designs
 
