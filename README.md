@@ -130,6 +130,8 @@ The scenarios are described in terms of patient access to a simplified Personal 
 
 ### Initial State
 
+
+
 ### New Patient Scenario
 
 In this scenario a patient updates all the sections in master health record with one full save when there is no previous health data.  The implementation of this scenario depends on the following parameters
@@ -142,11 +144,20 @@ In this scenario a patient updates all the sections in master health record with
 In this scenario a patient launches the application to review her master health record data and possibly send it to her provider or print it.  She does not change any health information.  Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Once the full list is loaded a subset of the list is loaded in its entirety.  The implementation depends on the following parameters
 * `num_review_per_month`: This is the number of read only access to PHR per patient per month.  Depending on the number of patients in the system this determines the review only access per minute.
 * `detailed_review_percent`: This determines the percentage of overall number of entries that the patient wants to see in its entirety.  This determines the number of entries that are fully loaded per review only session.
-* `review_summary_to_detail_delay': This is the delay in seconds between patient loading the summaries and loading the first detailed entry.
-* `review_detail_to_detail_delay': This is the delay in seconds between patient loading full entries.
+* `review_summary_to_detail_delay`: This is the delay in seconds between patient loading the summaries and loading the first detailed entry.
+* `review_detail_to_detail_delay`: This is the delay in seconds between patient loading full entries.
 
 ### Update Master Health Record Scenario
 
+In this scenario a patient launches the application to add new entries, remove an existing entry or update an existing entry. Implementation of this scenario loads all the active entry summary fields for a patient as organized as sections.  Then new entries are added, a subset of entries are removed and a subset of entries are updated.  
+
+The implementation depends on the following parameters
+* `num_update_per_year`: This is the number of write access to master record per patient per year.  Depending on the number of patients in the system this determines write access to database per minute.
+* `new_entries_percent`: This is the average number of new entries patient adds in percentage to the total number of entries in the system in a write session.
+* `remove_entries_percent`: This is the average number of entries patient removes in percentage to the total number of entries in the system in this scenario.
+* `update_entries_percent`: This is the average number of entries patient updates in percentage to the total number of entries in the system during this scenario.
+
+In addition the implementation considers loading the summary, adding new entries, removing existing entries and updating existing entries as seperate steps and pauses `step_delay` second between each step per patient.
 
 # Database Designs
 
