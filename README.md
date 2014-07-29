@@ -128,11 +128,25 @@ The parameters for this effort are
 
 The scenarios are described in terms of patient access to a simplified Personal Health Record application.  This application includes a 'dashboard' where patients can see their 'active' Master Health Record in a list.  The list is organized in sections and includes 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety and update or add new values to fields.  Patients can also obtain their health data from various sources such as Blue Button continuity of care documents which can include multiple sections and entries that exist in the Master Health Record.  The PHR application compares what is currently in the Master Health Record to what exists on the source and adds the new ones to Master Health Record .  Patient can also remove particular entries.
 
-### New Patient
+### Initial State
 
-### Review Master Health Record
+### New Patient Scenario
 
-### Update Master Health Record
+In this scenario a patient updates all the sections in master health record with one full save when there is no previous health data.  The implementation of this scenario depends on the following parameters
+* `new_patient_per_minute`: This is how many patients are created per minute and will be a constant for each run.
+* `num_sections`: This is the number of sections in a master health record and will be a constant for each run.
+* `num_entries_per_section`: This is the average number of entries per section and will be a constant for each run and each patient.  
+
+### Review Master Health Record Scenario
+
+In this scenario a patient launches the application to review her master health record data and possibly send it to her provider or print it.  She does not change any health information.  Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Once the full list is loaded a subset of the list is loaded in its entirety.  The implementation depends on the following parameters
+* `num_review_per_month`: This is the number of read only access to PHR per patient per month.  Depending on the number of patients in the system this determines the review only access per minute.
+* `detailed_review_percent`: This determines the percentage of overall number of entries that the patient wants to see in its entirety.  This determines the number of entries that are fully loaded per review only session.
+* `review_summary_to_detail_delay': This is the delay in seconds between patient loading the summaries and loading the first detailed entry.
+* `review_detail_to_detail_delay': This is the delay in seconds between patient loading full entries.
+
+### Update Master Health Record Scenario
+
 
 # Database Designs
 
