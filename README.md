@@ -126,14 +126,23 @@ The parameters for this effort are
 
 # Scenarios
 
-The scenarios are described in terms of patient access to a simplified Personal Health Record application.  This application includes a 'dashboard' where patients can see their 'active' Master Health Record in a list.  The list is organized in sections and includes 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety and update or add new values to fields.  Patients can also obtain their health data from various sources such as Blue Button continuity of care documents which can include multiple sections and entries that exist in the Master Health Record.  The PHR application compares what is currently in the Master Health Record to what exists on the source and adds the new ones to Master Health Record .  Patient can also remove particular entries.
+The scenarios are based on patient access to a simplified Personal Health Record application.  This application has a 'dashboard' where patients can see their 'active' Master Health Record entries in a list.  The list is organized in sections and displays 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety, update or add new values to its fields, or remove it.  Patients can also add new entries either from sources like Blue Button Continuity of Care (CCD) documents automatically or manually. 
 
-### Initial State
+From database access point of view this translates to the following indivual actions
+* Load the summary information for all the active entries organized in sections.
+* Load all the details of an entry.
+* Delete an entry.
+* Update an entry.
+* Add a new entry.
+We provide a method for each of these database actions using node.js.  Implementation of benchmark scenarios simply calls to these
+
+### Initial State and Common Parameters
 
 Each scenario starts with a number of patient record loaded in the system.  The implementation of loading patients in to the system accepts the following as parameters
 * `num_patients`: Number of patients.
 * `num_sections`: Average number of sections in master health record.
 * `num_entries_per_section`: Average number of entries per section.
+* `deleted_percentage`: The percentage of entries that are deleted with respect to total number of entries.
 Actual content of the entries are fully synthetic data with string and arrays of predetermined length and predetermined number values.
 
 Each scenario has a few steps corresponding to patient actions.  A value of `step_delay` seconds will be used between each step in the implementation of the steps as database actions.
