@@ -216,14 +216,15 @@ var patients = {
 
 In each of the designs in the previous [section](#singleEntryDesigns), the basic document stored is an entry in a particular section.  This section explores the possibility to store multiple entries in a single document.  Since there is a 16M limit on a single document there must be a limit on the number entries a single document can contain. This limit `entries_per_document` is one of the parameters of the experimentation of performance.   
 
+# Performance Metric
 
+In this effort we mainly depend on MongoDB 'Profiler'.  The profiler comes with MongoDB and stores all the executed commands and the execution duration in the database.  Our approach is to run our scenarios with profiler turned on for all the design choices and compare the execution times.  In addition to choice of the database design the following are some other parameters that is being considered
+* Number of patients
+* Frequency of patient access to Master Health Record
+* Number of sections in Master Heath Record
+* Frequency of read access to Master Health Record, differentiating between summary fields and full entries
+* Frequency and nature of updates to the Master Health Record
 
+# Environment
 
-
-
-
-
-
-
-
-
+We will run MongoDB on a Linux (Ubuntu) Virtual Machine on a Mac Pro laptop.  The scenarios will be implemented in node.js and run in the Mac Pro itself.  
