@@ -107,9 +107,9 @@ var history = [
 ```
 Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
-# Scenarios
+# Benchmark Scenarios
 
-The scenarios are based on patient access to a simplified Personal Health Record application.  This application has a 'dashboard' where patients can see their 'active' Master Health Record entries in a list.  The list is organized in sections and displays 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety, update or add new values to its fields, or remove it.  Patients can also add new entries either from sources like Blue Button Continuity of Care (CCD) documents automatically or manually. 
+The benchmark scenarios are based on patient access to a simplified Personal Health Record application which stores Master Health Record for each patient using MongoDB.  This application has a 'dashboard' where patients can see their 'active' Master Health Record entries in a list.  The list is organized in sections and displays 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety, update or add new values to its fields, or remove it.  Patients can also add new entries either from sources like Blue Button Continuity of Care (CCD) documents automatically or manually. 
 
 From database access point of view this translates to the following indivual actions
 
@@ -132,7 +132,7 @@ Each scenario starts with a number of patient records loaded in the system.  The
 
 Actual content of the entries are fully synthetic data with string and arrays of predetermined length and predetermined number values.
 
-Each scenario has a few steps corresponding to patient actions.  A value of `step_delay` in seconds is used between each step in the implementation.
+Each scenario has steps corresponding to patient actions.  A value of `step_delay` in seconds is used between each step in the implementation.
 
 ### New Patient Scenario
 
@@ -158,11 +158,11 @@ In this scenario a patient launches the application to add new entries, remove a
 
 The implementation depends on the following parameters
 * `num_update_per_year`: This is the number of write access to master record per patient per year.  Depending on the number of patients in the system this determines write access to database per minute.
-* `new_entries_percent`: This is the average number of new entries patient adds in percentage to the total number of entries in the system in a write session.
-* `remove_entries_percent`: This is the average number of entries patient removes in percentage to the total number of entries in the system in this scenario.
-* `update_entries_percent`: This is the average number of entries patient updates in percentage to the total number of entries in the system during this scenario.
+* `new_entries_percent`: This is the average number of new entries patient adds in percentage to the total number of entries for a patient.
+* `remove_entries_percent`: This is the average number of entries patient removes in percentage to the total number of entries for a patient.
+* `update_entries_percent`: This is the average number of entries patient updates in percentage to the total number of entries for a patient.
 
-In addition the implementation considers loading the summary, adding new entries, removing existing entries and updating existing entries (each) as seperate steps and pauses `step_delay` second between each step per patient.
+In addition the implementation considers loading the summary, adding new entries, removing existing entries and updating each existing entry as seperate steps and pauses `step_delay` second between them per patient.
 
 # Database Designs
 
