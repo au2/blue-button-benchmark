@@ -123,7 +123,16 @@ The parameters for this effort are
 * `num_patients`
 * `num_new_patient`
 * `num_of_sections`
-* `
+
+# Scenarios
+
+The scenarios are described in terms of patient access to a simplified Personal Health Record application.  This application includes a 'dashboard' where patients can see their 'active' Master Health Record in a list.  The list is organized in sections and includes 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety and update or add new values to fields.  Patients can also obtain their health data from various sources such as Blue Button continuity of care documents which can include multiple sections and entries that exist in the Master Health Record.  The PHR application compares what is currently in the Master Health Record to what exists on the source and adds the new ones to Master Health Record .  Patient can also remove particular entries.
+
+### New Patient
+
+### Review Master Health Record
+
+### Update Master Health Record
 
 # Database Designs
 
