@@ -130,7 +130,13 @@ The scenarios are described in terms of patient access to a simplified Personal 
 
 ### Initial State
 
+Each scenario starts with a number of patient record loaded in the system.  The implementation of loading patients in to the system accepts the following as parameters
+* `num_patients`: Number of patients.
+* `num_sections`: Average number of sections in master health record.
+* `num_entries_per_section`: Average number of entries per section.
+Actual content of the entries are fully synthetic data with string and arrays of predetermined length and predetermined number values.
 
+Each scenario has a few steps corresponding to patient actions.  A value of `step_delay` seconds will be used between each step in the implementation of the steps as database actions.
 
 ### New Patient Scenario
 
