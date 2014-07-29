@@ -107,6 +107,7 @@ var history = [
 ```
 Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
+<a name="scenarios"/>
 # Benchmark Scenarios
 
 The benchmark scenarios are based on patient access to a simplified Personal Health Record application which stores Master Health Record for each patient using MongoDB.  This application has a 'dashboard' where patients can see their 'active' Master Health Record entries in a list.  The list is organized in sections and displays 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety, update or add new values to its fields, or remove it.  Patients can also add new entries either from sources like Blue Button Continuity of Care (CCD) documents automatically or manually. 
@@ -121,6 +122,7 @@ From database access point of view this translates to the following indivual act
 
 We provide a method for each of these database actions using node.js MongoDB driver.  Implementation of benchmark scenarios is implemented in node.js and calls to these actions in a specific schedule.
 
+<a name="initialSteps"/>
 ### Initial State and Common Parameters
 
 Each scenario starts with a number of patient records loaded in the system.  The implementation of loading patients into the system accepts the following as parameters
@@ -253,17 +255,12 @@ var patients = {
 
 ## Multiple Entry Designs
 
-In each of the designs in the previous [section](#singleEntryDesigns), the basic document stored is an entry in a particular section.  This section explores the possibility to store multiple entries in a single document.  Since there is a 16M limit on a single document there must be a limit on the number entries a single document can contain. This limit `entries_per_document` is one of the parameters of the experimentation of performance.   
+In each of the designs in the previous [section](#singleEntryDesigns), the basic document is an entry in a particular section.  The designs in this section explores the possibility to store multiple entries in a single document.  Since there is a 16M limit on a single document there must be a limit on the number entries a single document can contain. This limit `entries_per_document` is a parameters of that we vary to investigate performance.   
 
-# Performance Metric
+# Implementation and Performance Metric
 
-In this effort we mainly depend on MongoDB 'Profiler'.  The profiler comes with MongoDB and stores all the executed commands and the execution duration in the database.  Our approach is to run our scenarios with profiler turned on for all the design choices and compare the execution times.  In addition to choice of the database design the following are some other parameters that is being considered
-* Number of patients
-* Frequency of patient access to Master Health Record
-* Number of sections in Master Heath Record
-* Frequency of read access to Master Health Record, differentiating between summary fields and full entries
-* Frequency and nature of updates to the Master Health Record
+All the benchmark [scenarios](#scenarios) are implemented node.js and access to MongoDB using MongoDB node.js driver.  We run MongoDB on a Linux (Ubuntu) Virtual Machine on a Mac Pro laptop.  The [initialization steps](#initSteps) (loading preexisting patient data) is not part of the actual benchmark scnerio but is considered part of environment setup.  The scenarios are run on the Mac Pro itself and access the MongoDB virtual machine through the MongoDB port. 
 
-# Environment
+In this effort we mainly depend on MongoDB 'Profiler' for performance metric.  The profiler comes with MongoDB and stores all the executed commands and the execution duration in the database.  Our approach is to run our scenarios with profiler turned on for all the design choices and compare the execution times.  In addition to choice of the database design, variations in parameters described in [scenarios](#scenarios) are also investigated.
 
-We will run MongoDB on a Linux (Ubuntu) Virtual Machine on a Mac Pro laptop.  The scenarios will be implemented in node.js and run in the Mac Pro itself.  
+
