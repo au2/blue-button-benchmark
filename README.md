@@ -107,60 +107,50 @@ var history = [
 ```
 Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
 
-# Use Case and Parameters
-
-The use case for this work is a PHR application where patients can save, review and update their Master Health Record.  The use flow and database implications are as follows
-* Welcome page shows the Master Health Record organized as sections.  Each section shows list of all the active entries with only the summary fields.  This will be identified as "summary active load'.
-* Patient can receive health data from a source such as CCDA files and update the health record.  Based on the content of the source
-** New active entries can be added.
-** Existing active entries can be updated
-* Patient can choose a particular entry from the list and
-** See the details.
-** Update the entry.
-** Remove an entry.
-
-The parameters for this effort are
-* `num_patients`
-* `num_new_patient`
-* `num_of_sections`
-
 # Scenarios
 
 The scenarios are based on patient access to a simplified Personal Health Record application.  This application has a 'dashboard' where patients can see their 'active' Master Health Record entries in a list.  The list is organized in sections and displays 'summary fields' for patients to identify a particular entry.  Patients can select a particular entry and can view it in its entriety, update or add new values to its fields, or remove it.  Patients can also add new entries either from sources like Blue Button Continuity of Care (CCD) documents automatically or manually. 
 
 From database access point of view this translates to the following indivual actions
+
 * Load the summary information for all the active entries organized in sections.
 * Load all the details of an entry.
 * Delete an entry.
 * Update an entry.
 * Add a new entry.
-We provide a method for each of these database actions using node.js.  Implementation of benchmark scenarios simply calls to these
+
+We provide a method for each of these database actions using node.js MongoDB driver.  Implementation of benchmark scenarios is implemented in node.js and calls to these actions in a specific schedule.
 
 ### Initial State and Common Parameters
 
-Each scenario starts with a number of patient record loaded in the system.  The implementation of loading patients in to the system accepts the following as parameters
+Each scenario starts with a number of patient records loaded in the system.  The implementation of loading patients into the system accepts the following as parameters
+
 * `num_patients`: Number of patients.
 * `num_sections`: Average number of sections in master health record.
 * `num_entries_per_section`: Average number of entries per section.
 * `deleted_percentage`: The percentage of entries that are deleted with respect to total number of entries.
+
 Actual content of the entries are fully synthetic data with string and arrays of predetermined length and predetermined number values.
 
-Each scenario has a few steps corresponding to patient actions.  A value of `step_delay` seconds will be used between each step in the implementation of the steps as database actions.
+Each scenario has a few steps corresponding to patient actions.  A value of `step_delay` in seconds is used between each step in the implementation.
 
 ### New Patient Scenario
 
-In this scenario a patient updates all the sections in master health record with one full save when there is no previous health data.  The implementation of this scenario depends on the following parameters
-* `new_patient_per_minute`: This is how many patients are created per minute and will be a constant for each run.
-* `num_sections`: This is the number of sections in a master health record and will be a constant for each run.
-* `num_entries_per_section`: This is the average number of entries per section and will be a constant for each run and each patient.  
+In this scenario a patient adds all the entries in master health record in one step.   There does not exist any previous health data in the system for the patient.  The implementation of this scenario depends on the following parameters
+
+* `new_patient_per_minute`: This is how many patients are created per minute.
+
+Otherwise this scenario uses the same `num_sections` and `num_entries_per_section` in initialization stage.
 
 ### Review Master Health Record Scenario
 
 In this scenario a patient launches the application to review her master health record data and possibly send it to her provider or print it.  She does not change any health information.  Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Once the full list is loaded a subset of the list is loaded in its entirety.  The implementation depends on the following parameters
-* `num_review_per_month`: This is the number of read only access to PHR per patient per month.  Depending on the number of patients in the system this determines the review only access per minute.
+
+* `num_review_per_year`: This is the number of read only access to PHR per patient per year.  Depending on the number of patients in the system this determines the review only access per minute.
 * `detailed_review_percent`: This determines the percentage of overall number of entries that the patient wants to see in its entirety.  This determines the number of entries that are fully loaded per review only session.
-* `review_summary_to_detail_delay`: This is the delay in seconds between patient loading the summaries and loading the first detailed entry.
-* `review_detail_to_detail_delay`: This is the delay in seconds between patient loading full entries.
+
+Loading of summary of all active entries and loading each entry fully are individual steps in this scenario and `step_delay` is used in between the steps.
+
 
 ### Update Master Health Record Scenario
 
@@ -172,7 +162,7 @@ The implementation depends on the following parameters
 * `remove_entries_percent`: This is the average number of entries patient removes in percentage to the total number of entries in the system in this scenario.
 * `update_entries_percent`: This is the average number of entries patient updates in percentage to the total number of entries in the system during this scenario.
 
-In addition the implementation considers loading the summary, adding new entries, removing existing entries and updating existing entries as seperate steps and pauses `step_delay` second between each step per patient.
+In addition the implementation considers loading the summary, adding new entries, removing existing entries and updating existing entries (each) as seperate steps and pauses `step_delay` second between each step per patient.
 
 # Database Designs
 
