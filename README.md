@@ -196,7 +196,7 @@ var patients = {
   ...
 };
 ```
-The _entries_ collection now simply stores health data (schemas `allergies_entry_schema`, `medication_entry_schema`, etc.).  Indexing of 'summary fields' remain as additional design choice that is investigated.
+The _entries_ collection now simply stores health data (schemas `allergies_entry_schema`, `medication_entry_schema`, etc.).  Indexing of 'summary fields' remain as additional design choice that is investigated.  Here we assume that the number of entries is not expected to be high enough to exceed MongoDB 16M limit in for any record in _patients_ collections.
 
 ## Design 4
 
@@ -237,7 +237,7 @@ In each of the designs in the previous [section](#singleEntryDesigns), the basic
 
 # Implementation and Performance Metric
 
-All the benchmark [scenarios](#scenarios) are implemented node.js and access to MongoDB using MongoDB node.js driver.  We run MongoDB on a Linux (Ubuntu) Virtual Machine on a Mac Pro laptop.  The [initialization steps](#initSteps) (loading preexisting patient data) is not part of the actual benchmark scnerio but is considered part of environment setup.  The scenarios are run on the Mac Pro itself and access the MongoDB virtual machine through the MongoDB port. 
+All the benchmark [scenarios](#scenarios) are implemented node.js and access to MongoDB using MongoDB node.js driver.  We run MongoDB on a Linux (Ubuntu) Virtual Machine on a Mac Pro laptop.  The [initialization steps](#initSteps) (loading preexisting patient data) is not part of the actual benchmark scenario but is considered part of environment setup.  The scenarios are run on the Mac Pro itself and access the MongoDB virtual machine through the MongoDB port.  For each database design the testing starts with preloaded patients and all scnerios are run simultenously for a predetermied time (order of 10's of minutes).
 
 In this effort we mainly depend on MongoDB 'Profiler' for performance metric.  The profiler comes with MongoDB and stores all the executed commands and the execution duration in the database.  Our approach is to run our scenarios with profiler turned on for all the design choices and compare the execution times.  In addition to choice of the database design, variations in parameters described in [scenarios](#scenarios) are also investigated.
 
