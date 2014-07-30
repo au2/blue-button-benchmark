@@ -145,7 +145,7 @@ In addition the implementation considers loading the summary, adding new entries
 
 This work looks into various database designs to store Master Health Record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the designs that are compared.  Databases are described in terms of MongoDB collections and schema for each collection.
 
-In these design descriptions we will assume master health record consists of two sections: allergies and procedures.  In the actual experimentation of these design number of sections will be one of the parameters for testing.
+For simplicity in these design descriptions we use two sections: allergies and medications.  In the actual implementation of [scenarios](#scenarios) `num_sections` is used.
 
 <a name="singleEntryDesigns"/>
 ## Single Entry Designs
@@ -153,55 +153,39 @@ In these design descriptions we will assume master health record consists of two
 <a name="design1"/>
 ## Design 1
 
-In this design each entry for a particular section, source and update history are stored in their own collections.  Each collection record `pat_key` as an index property. The collections are: _allergies_, _procedures_, _sources_, and _histories_.
+In this design each entry for a particular section is stored in its own collections.  The schema for collections _allergies_ and _medications_ are
 
 ``` javascript
 var allergies_schema = {
-  data: allergies_entry,
+  data: allergy_entry_schema,
   pat_key: String,
-  status: String,
-  history: [ObjectId]   // histories
+  status: String
 };
 
-var procedures_schema = {
-  data: procedures_entry,
+var medications_schema = {
+  data: medication_entry_schema,
   pat_key: String,
-  status: String,
-  history: [ObjectId]   // histories
+  status: String
 };
-
-var histories_schema = {
-  source: ObjectId,     // sources
-  update_type: String,
-  update_instance: Date
-};
-
-var source_schema = {
-  name: String,
-  content: String,
-  content_type: String,
-  mime_type: String
-}
 ```
-both `pat_key` and `status` are indexed properties.
+`pat_key` is always indexed.  Indexing of `status` and 'summary fields' are additional design choices that are investigated.
 
 ## Design 2
 
-This is a variation of [Design 1](#design1) where instead of different collections for each section, all sections are stored in the same collection.  To identify an individual section type a `section_name` property is added to the schema.  Thus _allergies_ and _procedures_ are replaced by a single _entries_ collection whose schema is
+This is a variation of [Design 1](#design1) where instead of different collections for each section, all sections are stored in the same collection.  To identify an individual section type an indexed `section_name` property is added to the schema.  Thus _allergies_ and _medications_ are replaced by a single _entries_ collection whose schema is
 ``` javascript
 var entries = {
-  data: allergies_entry,
+  data: allergies_entry_schema,  // or medication_enry_schema, etc.
   pat_key: String,
   status: String,
   section_name: String,
-  history: [ObjectId]   // histories
 };
 ```
-`section_name` is indexed.
+As in [Design 1](#design1) `pat_key` is always indexed and indexing of `status` and 'summary fields' are additional design choices that are investigated.
 
 ## Design 3
 
-In this design instead of identifying patient with `pat_key` as part of each entry record there is a patient collection which includes all the entries
+In this design instead of identifying patient with an indexed `pat_key` as part of each entry record there is a patient collection which includes all the entries
 ``` javascript
 var patients = {
   pat_key: String,
@@ -209,14 +193,15 @@ var patients = {
   procedures: [ObjectId]
   deleted_allergies: [ObjectId],
   deleted_procedures: [ObjectId],
-  preliminary_allergies: [ObjectId],
-  preliminary_procedures: [ObjectId]
+  ...
 };
 ```
+The entries collection now simply stores Master Health Record data.  Indexing of 'summary fields' remain as additional design choice that is investigated.
+
 
 ## Design 4
 
-This is a variation of Design 3 except that `status` and `section_name` are stored as part of the entries array
+This is a variation of Design 3 except that `status` and `section_name` are stored as part of the entries array in patients collection.
 ``` javascript
 var patients = {
   pat_key: String,
@@ -227,6 +212,25 @@ var patients = {
   ]
 };
 ```
+Both `status` and `section_name` are indexed.  
+
+## Designs 1d, 2d, 3d and 4d
+
+These are variations of Designs 1, 2, 3, and 4 where 'summary fields' are also stored in seperate collections instead of being indexed.  For example additional collections for Design 1 are
+``` javascript
+var allergies_summary_schema = {
+  data: allergy_summary_schema,
+  pat_key: String,
+  status: String
+};
+
+var medications_summary, schema = {
+  data: medication_summary_schema,
+  pat_key: String,
+  status: String
+};
+```
+Although status is not really required to be stored in summary collections based on our Scenarios and simplified model we include it because in the actual PHR application more than one status exists and multiple summary lists per seperate states exist.
 
 ## Multiple Entry Designs
 
