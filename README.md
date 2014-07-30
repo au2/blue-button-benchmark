@@ -93,7 +93,7 @@ From database access point of view this translates to the following indivual act
 * Load all the details of an entry.
 * Delete an entry.
 * Update an entry.
-* Add a new entry.
+* Add a new entry or entries as a whole.
 
 We provide a method for each of these database actions using node.js MongoDB driver.  Implementation of benchmark scenarios is implemented in node.js and calls to these actions in a specific schedule.
 
@@ -113,15 +113,15 @@ Each scenario has steps corresponding to patient actions.  A value of `step_dela
 
 ### New Patient Scenario
 
-In this scenario a patient adds all the entries in master health record in one step.   There does not exist any previous health data in the system for the patient.  The implementation of this scenario depends on the following parameters
+In this scenario a patient adds all the entries in her Master Health Record in one step.   There does not exist any previous health data in the system for the patient.  The implementation of this scenario depends on the following parameters
 
 * `new_patient_per_minute`: This is how many patients are created per minute.
 
-Otherwise this scenario uses the same `num_sections` and `num_entries_per_section` in initialization stage.
+Otherwise this scenario uses the same `num_sections` and `num_entries_per_section` in [initialization stage](#initialSteps).
 
 ### Review Master Health Record Scenario
 
-In this scenario a patient launches the application to review her master health record data and possibly send it to her provider or print it.  She does not change any health information.  Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Once the full list is loaded a subset of the list is loaded in its entirety.  The implementation depends on the following parameters
+In this scenario a patient launches the application to review her Master Health Record and possibly send it to her provider or print it.  She does not change any health information.  Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Once the full list is loaded a subset of the list is loaded in its entirety.  The implementation depends on the following parameters
 
 * `num_review_per_year`: This is the number of read only access to PHR per patient per year.  Depending on the number of patients in the system this determines the review only access per minute.
 * `detailed_review_percent`: This determines the percentage of overall number of entries that the patient wants to see in its entirety.  This determines the number of entries that are fully loaded per review only session.
@@ -131,7 +131,7 @@ Loading of summary of all active entries and loading each entry fully are indivi
 
 ### Update Master Health Record Scenario
 
-In this scenario a patient launches the application to add new entries, remove an existing entry or update an existing entry. Implementation of this scenario loads all the active entry summary fields for a patient as organized as sections.  Then new entries are added, a subset of entries are removed and a subset of entries are updated.  
+In this scenario a patient launches the application to add new entries, remove an existing entry or update an existing entry. Implementation of this scenario loads all the active entry summary fields for a patient organized as sections.  Then new entries are added, a subset of entries are removed and a subset of entries are updated.  
 
 The implementation depends on the following parameters
 * `num_update_per_year`: This is the number of write access to master record per patient per year.  Depending on the number of patients in the system this determines write access to database per minute.
