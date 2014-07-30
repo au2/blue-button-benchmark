@@ -145,7 +145,7 @@ In addition the implementation considers loading the summary, adding new entries
 
 This work looks into various database designs to store Master Health Record [data content](#dataContent) in MongoDB from performance perspective.  This section describes all the designs that are compared.  Databases are described in terms of MongoDB collections and schema for each collection.
 
-For simplicity in these design descriptions we use two sections: allergies and medications.  In the actual implementation of [scenarios](#scenarios) `num_sections` is used.
+For simplicity in these design descriptions we use two sections: allergies and medications.  In the actual implementation of [scenarios](#scenarios) `num_sections` sections is used.
 
 <a name="singleEntryDesigns"/>
 ## Single Entry Designs
@@ -153,7 +153,7 @@ For simplicity in these design descriptions we use two sections: allergies and m
 <a name="design1"/>
 ## Design 1
 
-In this design each entry for a particular section is stored in its own collections.  The schema for collections _allergies_ and _medications_ are
+In this design entries for a particular section are stored in its own collections.  The schema for collections _allergies_ and _medications_ are
 
 ``` javascript
 var allergies_schema = {
@@ -172,10 +172,10 @@ var medications_schema = {
 
 ## Design 2
 
-This is a variation of [Design 1](#design1) where instead of different collections for each section, all sections are stored in the same collection.  To identify an individual section type an indexed `section_name` property is added to the schema.  Thus _allergies_ and _medications_ are replaced by a single _entries_ collection whose schema is
+This is a variation of [Design 1](#design1) where all sections are stored in the same collection.  To identify an individual section type an indexed `section_name` property is added to the schema.  Thus _allergies_ and _medications_ are replaced by a single _entries_ collection whose schema is
 ``` javascript
 var entries = {
-  data: allergies_entry_schema,  // or medication_enry_schema, etc.
+  data: allergies_entry_schema,  // varies with section type medication_enry_schema, etc.
   pat_key: String,
   status: String,
   section_name: String,
@@ -190,18 +190,17 @@ In this design instead of identifying patient with an indexed `pat_key` as part 
 var patients = {
   pat_key: String,
   allergies: [ObjectId],
-  procedures: [ObjectId]
+  medications: [ObjectId]
   deleted_allergies: [ObjectId],
-  deleted_procedures: [ObjectId],
+  deleted_medications: [ObjectId],
   ...
 };
 ```
-The entries collection now simply stores Master Health Record data.  Indexing of 'summary fields' remain as additional design choice that is investigated.
-
+The _entries_ collection now simply stores health data (schemas `allergies_entry_schema`, `medication_entry_schema`, etc.).  Indexing of 'summary fields' remain as additional design choice that is investigated.
 
 ## Design 4
 
-This is a variation of Design 3 except that `status` and `section_name` are stored as part of the entries array in patients collection.
+This is a variation of Design 3 except that `status` and `section_name` are stored as part of the entries array in patients collection instead of seperate properties.
 ``` javascript
 var patients = {
   pat_key: String,
@@ -216,7 +215,7 @@ Both `status` and `section_name` are indexed.
 
 ## Designs 1d, 2d, 3d and 4d
 
-These are variations of Designs 1, 2, 3, and 4 where 'summary fields' are also stored in seperate collections instead of being indexed.  For example additional collections for Design 1 are
+These are variations of Designs 1, 2, 3, and 4 where 'summary fields' are stored in seperate collections instead of being indexed.  For example additional collections for Design 1 are
 ``` javascript
 var allergies_summary_schema = {
   data: allergy_summary_schema,
@@ -230,7 +229,7 @@ var medications_summary, schema = {
   status: String
 };
 ```
-Although status is not really required to be stored in summary collections based on our Scenarios and simplified model we include it because in the actual PHR application more than one status exists and multiple summary lists per seperate states exist.
+Although status is not really required to be stored in summary collections based on our Scenarios and simplified model we include it because in an actual PHR application more than one status is likely and multiple summary lists per seperate states might exist.
 
 ## Multiple Entry Designs
 
