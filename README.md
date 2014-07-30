@@ -10,11 +10,11 @@ In this paper we concentrate on a Blue Button CCDA based patient data model and 
 <a name="dataContent"/>
 # Data Content
 
-Data whose storage characteristics is being investigated here is the Master Health Record which contains all historical data about patients' health.  It is based on [blue-button](https://github.com/amida-tech/blue-button) data model.  [blue-button](https://github.com/amida-tech/blue-button) it self is based on Blue Button CCDA.
+Here we investigate storage characteristics of patient health information which is referred as Master Health Record.  Master Health Record contains current and historical patient health information.  It is based on [blue-button](https://github.com/amida-tech/blue-button) data model which itself is based on Blue Button CCDA.
 
 ## Health Data Content
 
-Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the unit health data storage element here is an _entry_ whose content differs from section to section.  For example for allergies the [Mongoose schema](http://mongoosejs.com/docs/guide.html) for an entry is
+Following CCDA, Master Health Record is organized in sections such as allergies and medications and storage is built based on this sectional organization.  Sections are further organized as a set of entries. Thus the primary document that is stored here is an _entry_ whose content differs from section to section.  For example for allergies the [Mongoose schema](http://mongoosejs.com/docs/guide.html) for an entry is
 ``` javascript
 var allergy_entry_schema = {
   allergen: {
@@ -54,7 +54,7 @@ var allergy_entry_schema = {
 };
 ```
 
-Each entry contains two to four fields that can identify the entry in a list of entries.  Patient can select an entry from a list based on these entries to see more details.  As an example for allergies the summary fields are
+Each entry contains a small subset of fields ('summary fields') that patients can use to identify the entry in a list of entries.  Patients can select an entry from a list based on these fields to see more details.  For example `allergen_name`, `severity` and `status` is chosen as 'summary fields' for allergies
 ``` javascript
 var allergy_summary_schema = {
   allergen_name: String,
@@ -66,46 +66,21 @@ var allergy_summary_schema = {
 Patient Master Heath Record is a collection of sections and each section is an array of entries
 ``` javascript
 var mhr = {
-  demographics: demographics_entry,
-  medication: [medication_entry],
+  medications: [medication_entry],
   allergies: [allergy_entry],
   ...
 };
 ```
 
+Here we use here only a subset of possible over 70 CCDA sections: allergies, medications, procedures, vitals, problems, immunizations as implemented in [blue-button](https://github.com/amida-tech/blue-button) to simplify implementation.  Number of sections `num_sections` is a parameter for [benchmark scenarios](#scenarios) and for `num_sections` larger than 6 we simply repeat the sections with an indexed name (allergies_2, medications_2, etc.). 
+
 ## Metadata
 
-For each entry we assume three pieces of metadata: patient key, status and update history.
-In addition the following metadata is assumed for each entry
+For each entry we assume only two additional pieces of metadata: patient key and status.
 
-### Patient Key
+Each entry belongs to a patient. We identify patient with a single string for which we use the variable `pat_key` in schema descriptions.  Patient key is important since our solution needs to be scalable with number of patients. 
 
-Each entry belongs to a patient. We identify patient with a single string for which we will use variable `pat_key` in schema descriptions.  Patient key is important since our solution needs to be scalable with number of patients. 
-
-### Status
-
-We will assume that each entry can have three states: `active`, `preliminary`, `deleted`.  Active entries are those that are in a master health record.   Preliminary entries are those that have been read from a source for a patient but needs to be reviewed before being added to a master health record or rejected.  Deleted entries are once active ones that were removed from a master health record or preliminary ones that were rejected.
-
-We will use variable `status` in schema descriptions.
-
-### Update History
-
-Each entry in a master patient record originates from a source such as a CCDA file.  In subsequent receiving of sources entries can be updated or confirmed as they are.  The following is a schema of the information we assume
-``` javascript
-var source_info = {
-  name: String,
-  content: String,
-  content_type: String,
-  mime_type: String
-};
-
-var history = [
-  source: source_info,
-  update_type: String,
-  update_instance: Date
-];
-```
-Here `update_type` can be `new`, `update`, or `duplicate`.  `new` identifies the original creation of the entry, `update` identifies an update to an existing entry and `duplicate` identifies source that includes the same existing entry.
+We assume that each entry can have two states: `active` and `deleted`.  Active entries are those that are in a master health record. Deleted entries are once active ones that were removed from a master health record.  Once in the database entries are never physically removed.  We use variable `status` in schema descriptions to store states.
 
 <a name="scenarios"/>
 # Benchmark Scenarios
