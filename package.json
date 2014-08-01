@@ -1,0 +1,37 @@
+{
+    "author": "Afsin Ustundag, Paul Bradley and Chris Scheich",
+    "name": "blue-button-benchmark",
+    "description": "Master Health Record and Data Reconciliation Engine Persistance Layer",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:au2/blue-button-benchmark.git"
+    },
+    "bugs": {
+        "url": "https://github.com/amida-tech/blue-button-benchmark/issues"
+    },
+    "licenses": [{
+        "type": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }],
+    "dependencies": {
+        "underscore": "1.6.x",
+        "async": "0.9.x"
+    },
+    "devDependencies": {
+        "grunt": "0.4.x",
+        "grunt-contrib-jshint": "0.8.x",
+        "grunt-contrib-watch": "0.6.x",
+        "grunt-mocha-test": "0.10.x",
+        "mocha": "1.18.x",
+        "chai": "1.9.x",
+        "grunt-coveralls": "*",
+        "grunt-istanbul-coverage": "*",
+        "coveralls": "~2.10.0",
+        "mocha-lcov-reporter": "0.0.1",
+        "blue-button": "1.0.2"
+    },
+    "engines": {
+        "node": "0.10.x"
+    }
+}
