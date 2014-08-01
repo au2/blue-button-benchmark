@@ -11,7 +11,7 @@ describe('generate data', function() {
             array_size: 3,
             string_size: 7
         };
-        var schema = hdc.getEntrySchema('allergies');
+        var schema = hdc.getSchema('allergies');
         var result = bbhelper.generateSection(schema, options);
         console.log(JSON.stringify(result, undefined, 2));
         done();
