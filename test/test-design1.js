@@ -20,15 +20,7 @@ describe('design1', function() {
     };
 
     before(function(done) {
-        var n = options.num_sections;
-        var names = hdc.getSectionNames(n);
-        d1.open(function(err) {
-            if (err) {
-                done(err);
-            } else {
-                d1.clear(names, done);
-            }
-        });
+        d1.start(done);
     });
 
     it('saveRecord', function(done) {
