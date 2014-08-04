@@ -13,7 +13,7 @@ describe('generate data', function() {
             string_size: 7
         };
         var result = dg.generateRecord(options);
-        console.log(JSON.stringify(result, undefined, 2));
+        //console.log(JSON.stringify(result, undefined, 2));
         done();
     });
 });
