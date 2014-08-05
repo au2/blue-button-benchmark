@@ -6,6 +6,7 @@ var async = require('async');
 var dg = require('../lib/datagenerator');
 var d1 = require('../lib/dbdesign1');
 var hdc = require('../lib/healthdatacontent');
+var jsutil = require('../lib/jsutil');
 
 var expect = chai.expect;
 chai.config.includeStack = true;
@@ -41,17 +42,25 @@ describe('design1', function() {
         });
     });
 
+    var getProperty = function(path) {
+        return path.split('.').redce
+    };
+
     it('getDashboard', function(done) {
         d1.getDashboard('patkey', 'active', function(err, result) {
             if (err) {
                 done(err);
             } else {
                 Object.keys(result).forEach(function(sectionName) {
+                    var summaryFields = hdc.getSummaryFields(sectionName);
                     expect(record[sectionName]).to.exist;
                     var actual = result[sectionName].map(function(e) {
                         return e.data;
                     });
-                    var expected = record[sectionName];
+                    var expectedFull = record[sectionName];
+                    var expected = expectedFull.map(function(e) {
+                        return jsutil.selectFields(e, summaryFields);
+                    });
                     expect(actual).to.deep.include.members(expected);
                     expect(expected).to.deep.include.members(actual);                    
                 }); 

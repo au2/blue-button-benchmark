@@ -8,4 +8,3 @@ var d1 = require('../lib/dbdesign1');
 var hdc = require('../lib/healthdatacontent');
 
 var options = require('./lib/options');
-
