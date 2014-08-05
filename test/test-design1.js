@@ -19,12 +19,14 @@ describe('design1', function() {
         string_size: 7
     };
 
+    var record = null;
+
     before(function(done) {
         d1.start(done);
     });
 
     it('saveRecord', function(done) {
-        var record = dg.generateRecord(options);
+        record = dg.generateRecord(options);
         d1.saveRecord('patkey', record, 'active', function(err, result) {
             Object.keys(result).forEach(function(sectionName) {                
                 expect(record[sectionName]).to.exist;
@@ -36,6 +38,25 @@ describe('design1', function() {
                 expect(expected).to.deep.include.members(actual);
             });
             done(err);
+        });
+    });
+
+    it('getDashboard', function(done) {
+        d1.getDashboard('patkey', 'active', function(err, result) {
+            if (err) {
+                done(err);
+            } else {
+                Object.keys(result).forEach(function(sectionName) {
+                    expect(record[sectionName]).to.exist;
+                    var actual = result[sectionName].map(function(e) {
+                        return e.data;
+                    });
+                    var expected = record[sectionName];
+                    expect(actual).to.deep.include.members(expected);
+                    expect(expected).to.deep.include.members(actual);                    
+                }); 
+                done();
+            }
         });
     });
 
