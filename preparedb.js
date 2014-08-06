@@ -1,6 +1,7 @@
 "use strict";
 
 var async = require('async');
+var redis = require('redis');
 
 var dg = require('./lib/datagenerator');
 var d1 = require('./lib/dbdesign1');
@@ -33,7 +34,26 @@ d1.start(function(err) {
                 console.log(err);
             } else {
                 console.log('added ' + patientKeys.length + ' patients...');
-                process.exit(0);
+                var client = redis.createClient();
+                client.del('patkeys', function(err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        var savePatKey = function(patKey, cb) {
+                            client.rpush('patkeys', patKey, function(err) {
+                                cb(err);
+                            });
+                        }
+                        async.map(patientKeys, savePatKey, function(err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                client.quit();
+                                process.exit(0);
+                            }
+                        });                   
+                    }   
+                });
             }
         });        
     }

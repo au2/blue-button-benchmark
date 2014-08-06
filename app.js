@@ -2,9 +2,28 @@
 
 var async = require('async');
 var _ = require('underscore');
+var redis = require('redis');
 
-var dg = require('../lib/datagenerator');
-var d1 = require('../lib/dbdesign1');
-var hdc = require('../lib/healthdatacontent');
+var client = redis.createClient();
+client.llen('patkeys', function(err, n) {
+    console.log(n + ' elements');
+    var f = function(i, cb) {
+        client.lindex('patkeys', i, function(err, value) {
+            if (err) {
+                cb(err);
+            } else {
+                cb(null, value);
+            }
+        });
+    };
 
-var options = require('./lib/options');
+    async.map(_.range(n), f, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+        }
+        redis.quit(); 
+        process.exit(0);
+    });
+});
