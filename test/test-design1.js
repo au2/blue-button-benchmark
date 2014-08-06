@@ -42,9 +42,7 @@ describe('design1', function() {
         });
     });
 
-    var getProperty = function(path) {
-        return path.split('.').redce
-    };
+    var entries = {};
 
     it('getDashboard', function(done) {
         d1.getDashboard('patkey', 'active', function(err, result) {
@@ -62,11 +60,32 @@ describe('design1', function() {
                         return jsutil.selectFields(e, summaryFields);
                     });
                     expect(actual).to.deep.include.members(expected);
-                    expect(expected).to.deep.include.members(actual);                    
+                    expect(expected).to.deep.include.members(actual);
+                    entries[sectionName] = result[sectionName].map(function(e) {
+                        return e._id;
+                    });                    
                 }); 
                 done();
             }
         });
+    });
+
+    it('getEntry', function(done) {
+        Object.keys(entries).forEach(function(sectionName) {
+            var f = function(id, cb) {
+                d1.getEntry(sectionName, id, cb);
+            };
+            async.map(entries[sectionName], f, function(err, actual) {
+                if (err) {
+                    done(err);
+                } else {
+                    var expected = record[sectionName];
+                    expect(actual).to.deep.include.members(expected);
+                    expect(expected).to.deep.include.members(actual);
+                }
+            });
+        });
+        done();
     });
 
     after(function(done) {
