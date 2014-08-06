@@ -18,7 +18,7 @@ var addPatient = function(callback) {
     var index = patientKeys.length;
     var patkey = dg.generateString(options) + '_' + index;
     patientKeys.push(patkey);
-    sn.new_patient_scenario(patkey, callback);
+    sn.new_patient_scenario(patkey, true, callback);
 };
 
 console.log('adding ' + options.num_patients + ' patients...');
