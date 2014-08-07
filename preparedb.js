@@ -50,7 +50,7 @@ var run = function(options) {
                                     console.log(err);
                                 } else {
                                     client.quit();
-                                    process.exit(0);
+                                    d1.close();
                                 }
                             });                   
                         }   
