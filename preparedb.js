@@ -4,11 +4,11 @@ var async = require('async');
 var redis = require('redis');
 
 var dg = require('./lib/datagenerator');
-var d1 = require('./lib/dbdesign1');
 var sn = require('./lib/scenarios');
+var ds = require('./lib/designsupply');
 var optsup = require('./lib/optionssupply');
 
-var run = function(options) {
+var run = function(design, options) {
     var patientKeys = [];
     
     var needMorePatient = function() {
@@ -19,12 +19,12 @@ var run = function(options) {
         var index = patientKeys.length;
         var patkey = dg.generateString(options) + '_' + index;
         patientKeys.push(patkey);
-        sn.new_patient_scenario(patkey, options, callback);
+        sn.new_patient_scenario(patkey, design, options, callback);
     };
     
     console.log('adding ' + options.num_patients + ' patients...');
     
-    d1.start(options, function(err) {
+    design.start(options, function(err) {
         if (err) {
             console.log('error adding patients...');
             console.log(err);
@@ -50,7 +50,7 @@ var run = function(options) {
                                     console.log(err);
                                 } else {
                                     client.quit();
-                                    d1.close();
+                                    design.close();
                                 }
                             });                   
                         }   
@@ -63,5 +63,8 @@ var run = function(options) {
 
 var opt = optsup.getFromArgv(process.argv);
 if (opt) {
-    run(opt);
+    var design = ds(opt.design);
+    if (design) {
+        run(design, opt);
+    }
 }
