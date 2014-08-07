@@ -16,6 +16,9 @@ client.llen('patkeys', function(err, n) {
         console.log('error');
     } else {
         d1.open(function(err) {
+            var newPatientCounter = {};
+            var reviewCounter = {};
+
             if (err) {
                 console.log(err);
             } else {
@@ -26,7 +29,9 @@ client.llen('patkeys', function(err, n) {
                 var newPatient = setInterval(function() {
                     var patkey = dg.generateString(options) + '_' + patIndex;
                     ++patIndex;
+                    newPatientCounter[patkey] = true;
                     sn.new_patient_scenario(patkey, false, function(err) {
+                        delete newPatientCounter[patkey];
                         if (err) {
                             console.log(err);
                         }
@@ -39,7 +44,9 @@ client.llen('patkeys', function(err, n) {
                         if (err) {
                             console.log(err);
                         } else {
+                            reviewCounter[value]=true;
                             sn.reviewMasterHealthRecord(value, function(err) {
+                                delete reviewCounter[value];
                                 if (err) {
                                     console.log(err);
                                 }
@@ -51,8 +58,16 @@ client.llen('patkeys', function(err, n) {
                 setTimeout(function() {
                     clearInterval(newPatient);
                     clearInterval(review);
-                    process.exit(0);
-                }, 60100);
+                    client.quit();
+                    var cleanup = setInterval(function() {
+                        var r = Object.keys(newPatientCounter).length + Object.keys(reviewCounter).length;
+                        if (r === 0) {
+                            clearInterval(cleanup);
+                            d1.close(function(){});                          
+                        }
+                    }, 1000);
+
+                }, 10100);
             }
         });
     }
