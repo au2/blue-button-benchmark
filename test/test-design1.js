@@ -13,6 +13,8 @@ chai.config.includeStack = true;
 
 describe('design1', function() {
     var options = {
+        server: 'localhost',
+
         num_sections: 3,
         num_entries: 3,
 
@@ -23,7 +25,7 @@ describe('design1', function() {
     var record = null;
 
     before(function(done) {
-        d1.start(done);
+        d1.start(options, done);
     });
 
     it('saveRecord', function(done) {
@@ -45,7 +47,7 @@ describe('design1', function() {
     var entries = {};
 
     it('getDashboard', function(done) {
-        d1.getDashboard('patkey', 'active', function(err, result) {
+        d1.getDashboard('patkey', 'active', options, function(err, result) {
             if (err) {
                 done(err);
             } else {
