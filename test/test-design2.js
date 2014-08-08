@@ -4,14 +4,14 @@ var chai = require('chai');
 var async = require('async');
 
 var dg = require('../lib/datagenerator');
-var d1 = require('../lib/design1');
+var d2 = require('../lib/design2');
 var hdc = require('../lib/healthdatacontent');
 var jsutil = require('../lib/jsutil');
 
 var expect = chai.expect;
 chai.config.includeStack = true;
 
-describe('design1', function() {
+describe('design2', function() {
     var options = {
         server: 'localhost',
 
@@ -25,12 +25,14 @@ describe('design1', function() {
     var record = null;
 
     before(function(done) {
-        d1.start(options, done);
+        d2.start(options, function(err) {
+            done(err);
+        });
     });
 
     it('saveRecord', function(done) {
         record = dg.generateRecord(options);
-        d1.saveRecord('patkey', record, 'active', function(err, result) {
+        d2.saveRecord('patkey', record, 'active', function(err, result) {
             Object.keys(result).forEach(function(sectionName) {                
                 expect(record[sectionName]).to.exist;
                 var actual = result[sectionName].map(function(e) {
@@ -47,7 +49,7 @@ describe('design1', function() {
     var entries = {};
 
     it('getDashboard', function(done) {
-        d1.getDashboard('patkey', 'active', options, function(err, result) {
+        d2.getDashboard('patkey', 'active', options, function(err, result) {
             if (err) {
                 done(err);
             } else {
@@ -75,7 +77,7 @@ describe('design1', function() {
     it('getEntry', function(done) {
         Object.keys(entries).forEach(function(sectionName) {
             var f = function(id, cb) {
-                d1.getEntry(sectionName, id, cb);
+                d2.getEntry(sectionName, id, cb);
             };
             async.map(entries[sectionName], f, function(err, actual) {
                 if (err) {
@@ -91,6 +93,6 @@ describe('design1', function() {
     });
 
     after(function(done) {
-        d1.close(done);
+        d2.close(done);
     });
 });
